@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Χημεία Β΄ Λυκείου - Quiz 21ης Εβδομάδας</title>
+  <style>
+    :root {
+      --bg-color: #F4EFE6;
+      --card-bg: #FCFBF7;
+      --primary-brown: #6E3B16;
+      --olive-green: #4E6B4E;
+      --accent-cream: #EFE8DC;
+      --text-dark: #2C1A0E;
+      --text-muted: #655344;
+      --border-color: #E2D7C5;
+      --correct-green: #2E6F40;
+      --correct-bg: #EAF4EC;
+      --wrong-red: #A03416;
+      --wrong-bg: #FCEAE6;
+      --hint-bg: #F5F7F2;
+      --hint-border: #8FA88F;
+      --shadow: 0 8px 24px rgba(110, 59, 22, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-dark);
+      line-height: 1.6;
+      padding: 24px 16px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    /* Βελτιστοποίηση δεικτών (subscript) & εκθετών για ευκρίνεια */
+    sub {
+      font-size: 0.82em;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline;
+      bottom: -0.22em;
+      font-weight: 700;
+    }
+
+    sup {
+      font-size: 0.78em;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline;
+      top: -0.35em;
+      font-weight: 700;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 780px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Cards Styling */
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 28px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow);
+    }
+
+    /* 1. Επάνω Κάρτα Επικεφαλίδας */
+    .header-card {
+      text-align: center;
+      border-top: 5px solid var(--primary-brown);
+    }
+
+    .main-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--primary-brown);
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--olive-green);
+    }
+
+    /* Section Titles & Desc */
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-brown);
+      margin-bottom: 10px;
+    }
+
+    .description {
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      margin-bottom: 24px;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: var(--primary-brown);
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 10px;
+      background-color: #FFF;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary-brown);
+      box-shadow: 0 0 0 3px rgba(110, 59, 22, 0.12);
+    }
+
+    /* Mode Selection Cards */
+    .mode-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    .mode-card {
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      background-color: #FFF;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .mode-card:hover {
+      border-color: var(--primary-brown);
+      background-color: var(--accent-cream);
+    }
+
+    .mode-card.active {
+      border: 3px solid var(--primary-brown);
+      background-color: #FAF4EB;
+    }
+
+    .mode-title {
+      font-weight: 700;
+      color: var(--primary-brown);
+      font-size: 1.05rem;
+    }
+
+    .mode-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Action Buttons */
+    .btn-primary {
+      display: inline-block;
+      width: 100%;
+      padding: 14px 24px;
+      background-color: var(--primary-brown);
+      color: #FFFFFF;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .btn-primary:hover {
+      background-color: #552D10;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.99);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--primary-brown);
+      border: 2px solid var(--primary-brown);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--accent-cream);
+    }
+
+    .btn-hint {
+      background-color: #FFF;
+      color: var(--olive-green);
+      border: 1.5px solid var(--olive-green);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-hint:hover {
+      background-color: var(--hint-bg);
+      border-color: var(--primary-brown);
+      color: var(--primary-brown);
+    }
+
+    /* Progress Bar */
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--olive-green);
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background-color: var(--accent-cream);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background-color: var(--primary-brown);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Quiz Question Section */
+    .question-container {
+      margin-bottom: 16px;
+    }
+
+    .question-text {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    /* Options */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .option-item {
+      border: 1.5px solid var(--border-color);
+      border-radius: 10px;
+      padding: 14px 18px;
+      background-color: #FFF;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .option-item:hover:not(.disabled) {
+      border-color: var(--primary-brown);
+      background-color: var(--accent-cream);
+    }
+
+    .option-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: var(--accent-cream);
+      color: var(--primary-brown);
+      font-weight: 700;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .option-item.selected {
+      border-color: var(--primary-brown);
+      background-color: #FAF4EB;
+    }
+
+    .option-item.correct {
+      border-color: var(--correct-green) !important;
+      background-color: var(--correct-bg) !important;
+      color: var(--correct-green) !important;
+      font-weight: 600;
+    }
+
+    .option-item.wrong {
+      border-color: var(--wrong-red) !important;
+      background-color: var(--wrong-bg) !important;
+      color: var(--wrong-red) !important;
+    }
+
+    .option-item.disabled {
+      cursor: default;
+    }
+
+    /* Hint Box (Εμφανίζεται κάτω από τις ερωτήσεις/επιλογές) */
+    .hint-box {
+      background-color: var(--hint-bg);
+      border: 1px dashed var(--hint-border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      font-size: 0.92rem;
+      color: var(--olive-green);
+      display: none;
+    }
+
+    .hint-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--primary-brown);
+    }
+
+    /* Feedback Box */
+    .feedback-box {
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    .feedback-box.correct {
+      background-color: var(--correct-bg);
+      border: 1px solid var(--correct-green);
+      color: var(--correct-green);
+    }
+
+    .feedback-box.wrong {
+      background-color: var(--wrong-bg);
+      border: 1px solid var(--wrong-red);
+      color: var(--wrong-red);
+    }
+
+    .feedback-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    /* Controls Layout */
+    .quiz-bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--accent-cream);
+    }
+
+    .quiz-controls-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Report Section */
+    .report-header {
+      text-align: center;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--accent-cream);
+    }
+
+    .score-badge {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-color: var(--primary-brown);
+      color: #FFF;
+      margin: 16px 0;
+    }
+
+    .score-number {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .score-percent {
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 12px;
+      font-size: 0.92rem;
+      color: var(--olive-green);
+      font-weight: 600;
+    }
+
+    .review-item {
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 14px;
+      background-color: #FFF;
+    }
+
+    .review-q-title {
+      font-weight: 700;
+      color: var(--primary-brown);
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+
+    .review-ans-info {
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+
+    .review-explanation {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      background-color: var(--accent-cream);
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      .mode-container {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .main-title {
+        font-size: 1.8rem;
+      }
+
+      .subtitle {
+        font-size: 0.98rem;
+      }
+
+      .quiz-bottom-bar {
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+
+      .quiz-controls-right {
+        justify-content: space-between;
+      }
+
+      .btn-hint {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- 1. Επάνω Κάρτα Επικεφαλίδας -->
+    <header class="card header-card">
+      <h1 class="main-title">Χημεία Β΄ Λυκείου</h1>
+      <p class="subtitle">21η Εβδομάδα: Λίπη και Έλαια – Δομή Τριγλυκεριδίων & Υδρογόνωση (Ενότητα 5.2)</p>
+    </header>
+
+    <!-- 2. Κύρια Κάρτα Διαδραστικού Quiz (Αρχική Οθόνη) -->
+    <main id="setup-card" class="card">
+      <h2 class="section-title">Διαδραστικό Quiz Αξιολόγησης</h2>
+      <p class="description">
+        Εξετάστε τις γνώσεις σας στις έννοιες της 21ης Εβδομάδας: χημική δομή των τριγλυκεριδίων (τριεστέρες της γλυκερόλης), κορεσμένα vs. ακόρεστα λιπαρά οξέα, φυσική κατάσταση (στερεά λίπη vs. υγρά έλαια), δυνάμεις Van der Waals, αντίδραση σκλήρυνσης ελαίων (καταλυτική υδρογόνωση με Ni), βιομηχανική παραγωγή μαργαρίνης και εξαιρέσεις ύλης του ΙΕΠ.
+      </p>
+
+      <div class="form-group">
+        <label for="student-name" class="form-label">Ονοματεπώνυμο Μαθητή/τριας:</label>
+        <input type="text" id="student-name" class="form-input" placeholder="Εισάγετε το ονοματεπώνυμό σας (Προαιρετικό)">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Επιλέξτε Λειτουργία:</label>
+        <div class="mode-container">
+          <div id="mode-practice" class="mode-card active" onclick="selectMode('practice')">
+            <div class="mode-title">🎮 Εκμάθηση & Εξάσκηση</div>
+            <div class="mode-desc">Βήμα-βήμα με άμεσο feedback & επεξήγηση σε κάθε ερώτηση.</div>
+          </div>
+          <div id="mode-test" class="mode-card" onclick="selectMode('test')">
+            <div class="mode-title">📝 Προσομοίωση & Τεστ</div>
+            <div class="mode-desc">Συγκεντρωτική απάντηση όλων των ερωτήσεων & τελικό Report.</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="startQuiz()">Έναρξη Κουίζ →</button>
+    </main>
+
+    <!-- 3. Οθόνη Quiz -->
+    <main id="quiz-card" class="card hidden">
+      <div class="progress-header">
+        <span id="progress-text">Ερώτηση 1 από 12</span>
+        <span id="quiz-mode-badge" style="color: var(--primary-brown);">🎮 Εκμάθηση</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div id="progress-bar-fill" class="progress-bar-fill"></div>
+      </div>
+
+      <div class="question-container">
+        <div id="question-text" class="question-text">Κείμενο Ερώτησης</div>
+      </div>
+
+      <!-- Επιλογές Απαντήσεων -->
+      <div id="options-list" class="options-list">
+        <!-- Δυναμική προσθήκη επιλογών -->
+      </div>
+
+      <!-- Πλαίσιο Υπόδειξης (Εμφανίζεται κάτω από τις ερωτήσεις όταν πατηθεί το κουμπί) -->
+      <div id="hint-box" class="hint-box">
+        <div class="hint-title">💡 Παιδαγωγική Υπόδειξη:</div>
+        <div id="hint-text"></div>
+      </div>
+
+      <!-- Πλαίσιο Ανατροφοδότησης (Λειτουργία Εκμάθησης) -->
+      <div id="feedback-box" class="feedback-box">
+        <div id="feedback-title" class="feedback-title"></div>
+        <div id="feedback-text"></div>
+      </div>
+
+      <!-- Κάτω Μπάρα Χειρισμού -->
+      <div class="quiz-bottom-bar">
+        <div>
+          <!-- Κουμπί Υπόδειξη στο κάτω αριστερό μέρος -->
+          <button id="btn-hint" class="btn-hint" onclick="toggleHint()">💡 Υπόδειξη</button>
+        </div>
+        <div class="quiz-controls-right">
+          <button id="btn-prev" class="btn-secondary hidden" onclick="prevQuestion()">← Προηγούμενη</button>
+          <button id="btn-next" class="btn-primary" style="width: auto; min-width: 130px;" onclick="nextQuestion()" disabled>Επόμενη →</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- 4. Οθόνη Αποτελεσμάτων (Report) -->
+    <main id="report-card" class="card hidden">
+      <div class="report-header">
+        <h2 class="section-title">Αναλυτικό Report Αξιολόγησης</h2>
+        <p id="report-student-name" style="font-weight: 600; color: var(--olive-green); margin-top: 4px;"></p>
+        
+        <div class="score-badge">
+          <span id="score-number" class="score-number">0/12</span>
+          <span id="score-percent" class="score-percent">0%</span>
+        </div>
+
+        <div class="stats-row">
+          <span id="hints-used-count">💡 Υποδείξεις που χρησιμοποιήθηκαν: 0</span>
+        </div>
+
+        <p id="score-message" style="font-size: 0.95rem; color: var(--text-muted); margin-top: 8px;"></p>
+      </div>
+
+      <h3 style="color: var(--primary-brown); margin-bottom: 16px;">Ανασκόπηση Απαντήσεων:</h3>
+      <div id="review-list">
+        <!-- Λίστα ανασκόπησης -->
+      </div>
+
+      <button class="btn-primary" style="margin-top: 20px;" onclick="restartQuiz()">🔄 Επαναληπτικό Τεστ</button>
+    </main>
+
+  </div>
+
+  <script>
+    // Δεδομένα 12 Ερωτήσεων 21ης Εβδομάδας (Λίπη και Έλαια - Δομή Τριγλυκεριδίων & Υδρογόνωση)
+    const questions = [
+      {
+        question: "Τι είναι τα λίπη και τα έλαια από χημική άποψη;",
+        hint: "Σκεφτείτε την αντίδραση εστεροποίησης της τρισθενούς αλκοόλης γλυκερόλης με ανώτερα λιπαρά οξέα.",
+        options: [
+          "Είναι υδατάνθρακες μεγάλου μοριακού βάρους.",
+          "Είναι τριεστέρες της γλυκερόλης (1,2,3-προπανοτριόλης) με ανώτερα λιπαρά οξέα (τριγλυκερίδια).",
+          "Είναι πρωτεΐνες συνδεδεμένες με μέταλλα.",
+          "Είναι ανόργανα άλατα του νατρίου."
+        ],
+        correct: 1,
+        explanation: "Τα λίπη και τα έλαια είναι χημικά τριγλυκερίδια, δηλαδή τριεστέρες της γλυκερόλης (1,2,3-προπανοτριόλης) με ανώτερα μονοκαρβοξυλικά λιπαρά οξέα."
+      },
+      {
+        question: "Ποια είναι η συστηματική ονομασία κατά IUPAC της γλυκερόλης (γλυκερίνης);",
+        hint: "Πρόκειται για μια κορεσμένη τρισθενή αλκοόλη με 3 άτομα άνθρακα.",
+        options: [
+          "1,2,3-προπανοτριόλη",
+          "1,2-αιθανοδιόλη",
+          "προπανόνη",
+          "1-προπανόλη"
+        ],
+        correct: 0,
+        explanation: "Η γλυκερόλη (γλυκερίνη) είναι η τρισθενής αλκοόλη CH<sub>2</sub>(OH)-CH(OH)-CH<sub>2</sub>(OH) και ονομάζεται κατά IUPAC 1,2,3-προπανοτριόλη."
+      },
+      {
+        question: "Ποιο από τα παρακάτω ανώτερα λιπαρά οξέα είναι KOΡΕΣΜΕΝΟ;",
+        hint: "Αναζητήστε το λιπαρό οξύ που ανήκει στον γενικό τύπο C<sub>n</sub>H<sub>2n+1</sub>COOH (χωρίς διπλούς δεσμούς C=C).",
+        options: [
+          "Ελαϊκό οξύ (C<sub>17</sub>H<sub>33</sub>COOH)",
+          "Στεατικό οξύ (C<sub>17</sub>H<sub>35</sub>COOH)",
+          "Λινελαϊκό οξύ (C<sub>17</sub>H<sub>31</sub>COOH)",
+          "Λινολενικό οξύ (C<sub>17</sub>H<sub>29</sub>COOH)"
+        ],
+        correct: 1,
+        explanation: "Το στεατικό οξύ (C<sub>17</sub>H<sub>35</sub>COOH) είναι κορεσμένο λιπαρό οξύ (ακολουθεί τον τύπο C<sub>n</sub>H<sub>2n+1</sub>COOH). Αντίθετα, το ελαϊκό έχει 1 διπλό δεσμό C=C, το λινελαϊκό 2 και το λινολενικό 3."
+      },
+      {
+        question: "Ποιο από τα παρακάτω ανώτερα λιπαρά οξέα είναι ΑΚΟΡΕΣΤΟ με έναν διπλό δεσμό C=C;",
+        hint: "Πρόκειται για το κύριο λιπαρό οξύ του ελαιολάδου.",
+        options: [
+          "Παλμιτικό οξύ (C<sub>15</sub>H<sub>31</sub>COOH)",
+          "Στεατικό οξύ (C<sub>17</sub>H<sub>35</sub>COOH)",
+          "Ελαϊκό οξύ (C<sub>17</sub>H<sub>33</sub>COOH)",
+          "Βουτανικό οξύ (C<sub>3</sub>H<sub>7</sub>COOH)"
+        ],
+        correct: 2,
+        explanation: "Το ελαϊκό οξύ (C<sub>17</sub>H<sub>33</sub>COOH) είναι μονοακόρεστο λιπαρό οξύ, καθώς περιέχει έναν διπλό δεσμό C=C στην ανθρακική του αλυσίδα."
+      },
+      {
+        question: "Γιατί τα ζωικά λίπη είναι στερεά σε θερμοκρασία δωματίου ενώ τα φυτικά έλαια είναι υγρά;",
+        hint: "Σκεφτείτε τη διαμόρφωση των αλυσίδων: τα κορεσμένα λίπη έχουν ευθύγραμμες αλυσίδες που στοιβάζονται εύκολα, ενώ τα ακόρεστα έλαια έχουν κάμψεις λόγω cis-διπλών δεσμών.",
+        options: [
+          "Επειδή τα λίπη έχουν μικρότερη σχετική μοριακή μάζα.",
+          "Επειδή τα λίπη αποτελούνται κυρίως από κορεσμένα τριγλυκερίδια με ευθύγραμμες αλυσίδες που στοιβάζονται ισχυρά (Van der Waals), ενώ τα έλαια περιέχουν ακόρεστες αλυσίδες με κάμψεις (cis) που εμποδίζουν τη στοίβαξη.",
+          "Επειδή τα έλαια περιέχουν νερό.",
+          "Επειδή τα λίπη περιέχουν μέταλλα."
+        ],
+        correct: 1,
+        explanation: "Τα στερεά λίπη περιέχουν κορεσμένες ευθύγραμμες αλυσίδες που συσκευάζονται πυκνά αναπτύσσοντας ισχυρές δυνάμεις Van der Waals (υψηλό σημείο τήξης). Τα έλαια περιέχουν ακόρεστες αλυσίδες με cis-διπλούς δεσμούς που δημιουργούν «γωνίες/κάμψεις», εμποδίζοντας τη στοίβαξη (χαμηλό σημείο τήξης)."
+      },
+      {
+        question: "Ποια χημική αντίδραση εφαρμόζεται στη βιομηχανία για τη μετατροπή των υγρών φυτικών ελαίων σε στερεά λίπη («σκλήρυνση ελαίων» / παραγωγή μαργαρίνης);",
+        hint: "Πρόκειται για την προσθήκη υδρογόνου στους διπλούς δεσμούς C=C των ακόρεστων τριγλυκεριδίων.",
+        options: [
+          "Καταλυτική υδρογόνωση (προσθήκη H<sub>2</sub> παρουσία καταλύτη Νικελίου Ni).",
+          "Οξείδωση με υπερμαγγανικό κάλιο.",
+          "Σαπωνοποίηση με υδροξείδιο του νατρίου.",
+          "Αφυδάτωση με πυκνό θειικό οξύ."
+        ],
+        correct: 0,
+        explanation: "Η σκλήρυνση των ελαίων επιτυγχάνεται με καταλυτική υδρογόνωση (προσθήκη H<sub>2</sub> στους διπλούς δεσμούς C=C παρουσία καταλύτη Ni), μετατρέποντας τα ακόρεστα τριγλυκερίδια σε κορεσμένα στερεά λίπη (μαργαρίνες)."
+      },
+      {
+        question: "Πόσα mole αερίου H<sub>2</sub> απαιτούνται για την πλήρη υδρογόνωση 1 mole τριελαΐνης (τριγλυκερίδιο του ελαϊκού οξέος, C<sub>57</sub>H<sub>104</sub>O<sub>6</sub>);",
+        hint: "Η τριελαΐνη περιέχει 3 αλυσίδες ελαϊκού οξέος, άρα συνολικά 3 διπλούς δεσμούς C=C στο μόριό της.",
+        options: [
+          "1 mole H<sub>2</sub>",
+          "2 mole H<sub>2</sub>",
+          "3 mole H<sub>2</sub>",
+          "6 mole H<sub>2</sub>"
+        ],
+        correct: 2,
+        explanation: "Κάθε μόριο τριελαΐνης περιέχει 3 διπλούς δεσμούς C=C (έναν σε κάθε λιπαρή αλυσίδα). Συνεπώς, για τον πλήρη κορεσμό 1 mole τριελαΐνης απαιτούνται 3 mole H<sub>2</sub>."
+      },
+      {
+        question: "Ποιο στερεό τριγλυκερίδιο παράγεται από την πλήρη καταλυτική υδρογόνωση της υγρής τριελαΐνης (C<sub>57</sub>H<sub>104</sub>O<sub>6</sub>);",
+        hint: "Με την υδρογόνωση, το ελαϊκό οξύ (C<sub>17</sub>H<sub>33</sub>COOH) μετατρέπεται στο κορεσμένο στεατικό οξύ (C<sub>17</sub>H<sub>35</sub>COOH).",
+        options: [
+          "Τριστεαρίνη (C<sub>57</sub>H<sub>110</sub>O<sub>6</sub>)",
+          "Τριπαλμιτίνη",
+          "Γλυκερόλη",
+          "Στεατικό νάτριο"
+        ],
+        correct: 0,
+        explanation: "Η υδρογόνωση των 3 διπλών δεσμών της τριελαΐνης (C<sub>57</sub>H<sub>104</sub>O<sub>6</sub> + 3 H<sub>2</sub> → C<sub>57</sub>H<sub>110</sub>O<sub>6</sub>) παράγει το κορεσμένο στερεό τριγλυκερίδιο τριστεαρίνη."
+      },
+      {
+        question: "Ποια παράγραφος της Ενότητας 5.2 «Λίπη και Έλαια» ΕΞΑΙΡΕΙΤΑΙ από τη διδακτέα ύλη της Β΄ Λυκείου σύμφωνα με τις οδηγίες του ΙΕΠ (2026-2027);",
+        hint: "Θυμηθείτε την εξαίρεση που αναφέρεται στις επίσημες οδηγίες διδασκαλίας για το Κεφάλαιο 5ο.",
+        options: [
+          "Η παράγραφος «Βιολογικός ρόλος των λιπών και ελαίων».",
+          "Η δομή των τριγλυκεριδίων.",
+          "Η υδρογόνωση των ελαίων.",
+          "Τα σαπούνια και τα απορρυπαντικά."
+        ],
+        correct: 0,
+        explanation: "Σύμφωνα με τις οδηγίες του ΙΕΠ για την ενότητα 5.2, εξαιρείται ρητά η παράγραφος «Βιολογικός ρόλος των λιπών και ελαίων»."
+      },
+      {
+        question: "Ποιος είναι ο γενικός μοριακός τύπος ενός κορεσμένου μονοκαρβοξυλικού λιπαρού οξέος με n άτομα άνθρακα στη μονοσθενή αλκυλομάδα του;",
+        hint: "Πρόκειται για τον τύπο C<sub>n</sub>H<sub>2n+1</sub>COOH.",
+        options: [
+          "C<sub>n</sub>H<sub>2n+1</sub>COOH",
+          "C<sub>n</sub>H<sub>2n-1</sub>COOH",
+          "C<sub>n</sub>H<sub>2n-3</sub>COOH",
+          "C<sub>n</sub>H<sub>2n</sub>(OH)<sub>2</sub>"
+        ],
+        correct: 0,
+        explanation: "Τα κορεσμένα λιπαρά οξέα (όπως το παλμιτικό C<sub>15</sub>H<sub>31</sub>COOH και το στεατικό C<sub>17</sub>H<sub>35</sub>COOH) ακολουθούν τον γενικό τύπο C<sub>n</sub>H<sub>2n+1</sub>COOH."
+      },
+      {
+        question: "Πόσα g αερίου H<sub>2</sub> απαιτούνται για την πλήρη υδρογόνωση 88,4 g τριελαΐνης (C<sub>57</sub>H<sub>104</sub>O<sub>6</sub>); (Δίδονται: M<sub>r</sub>(τριελαΐνης) = 884, M<sub>r</sub>(H<sub>2</sub>) = 2)",
+        hint: "n(τριελαΐνης) = 88,4 / 884 = 0,1 mol. Από τη στοιχειομετρία 1 : 3, n(H<sub>2</sub>) = 0,3 mol. Υπολογίστε τη μάζα H<sub>2</sub>.",
+        options: [
+          "0,2 g H<sub>2</sub>",
+          "0,6 g H<sub>2</sub>",
+          "2,0 g H<sub>2</sub>",
+          "6,0 g H<sub>2</sub>"
+        ],
+        correct: 1,
+        explanation: "n(τριελαΐνης) = 88,4 / 884 = 0,1 mol. Από τη στοιχειομετρία τριελαΐνη + 3 H<sub>2</sub> → τριστεαρίνη, απαιτούνται n(H<sub>2</sub>) = 3 · 0,1 = 0,3 mol. Μάζα H<sub>2</sub> = 0,3 mol · 2 g/mol = 0,6 g."
+      },
+      {
+        question: "Πώς επηρεάζει ο βαθμός ακορεστότητας (αριθμός διπλών δεσμών C=C) το σημείο τήξεως των τριγλυκεριδίων;",
+        hint: "Όσο περισσότερους διπλούς δεσμούς περιέχει ένα τριγλυκερίδιο, τόσο δυσκολότερα στοιβάζεται.",
+        options: [
+          "Όσο αυξάνεται ο αριθμός διπλών δεσμών C=C, τόσο μειώνεται το σημείο τήξεως του τριγλυκεριδίου.",
+          "Όσο αυξάνεται ο αριθμός διπλών δεσμών C=C, τόσο αυξάνεται το σημείο τήξεως.",
+          "Ο αριθμός διπλών δεσμών δεν επηρεάζει καθόλου το σημείο τήξεως.",
+          "Όλα τα τριγλυκερίδια τήκονται στους 0 °C."
+        ],
+        correct: 0,
+        explanation: "Η αύξηση των διπλών δεσμών C=C εισάγει περισσότερες κάμψεις στις αλυσίδες, εξασθενώντας τις διαμοριακές δυνάμεις Van der Waals και ελαττώνοντας το σημείο τήξεως."
+      }
+    ];
+
+    // State Variables
+    let selectedMode = 'practice';
+    let currentQuestionIdx = 0;
+    let userAnswers = new Array(questions.length).fill(null);
+    let hintsOpened = new Array(questions.length).fill(false);
+    let studentName = '';
+
+    // Mode Selection Handler
+    function selectMode(mode) {
+      selectedMode = mode;
+      document.getElementById('mode-practice').classList.toggle('active', mode === 'practice');
+      document.getElementById('mode-test').classList.toggle('active', mode === 'test');
+    }
+
+    // Start Quiz
+    function startQuiz() {
+      studentName = document.getElementById('student-name').value.trim();
+      currentQuestionIdx = 0;
+      userAnswers = new Array(questions.length).fill(null);
+      hintsOpened = new Array(questions.length).fill(false);
+
+      document.getElementById('setup-card').classList.add('hidden');
+      document.getElementById('quiz-card').classList.remove('hidden');
+
+      document.getElementById('quiz-mode-badge').textContent = selectedMode === 'practice' ? '🎮 Εκμάθηση' : '📝 Τεστ';
+
+      renderQuestion();
+    }
+
+    // Render Current Question
+    function renderQuestion() {
+      const q = questions[currentQuestionIdx];
+
+      // Update progress
+      document.getElementById('progress-text').textContent = `Ερώτηση ${currentQuestionIdx + 1} από ${questions.length}`;
+      const progressPercent = ((currentQuestionIdx + 1) / questions.length) * 100;
+      document.getElementById('progress-bar-fill').style.width = `${progressPercent}%`;
+
+      // Set Question Text with HTML support
+      document.getElementById('question-text').innerHTML = q.question;
+
+      // Render Options
+      const optionsContainer = document.getElementById('options-list');
+      optionsContainer.innerHTML = '';
+
+      const letters = ['A', 'B', 'Γ', 'Δ'];
+      const hasAnswered = userAnswers[currentQuestionIdx] !== null;
+
+      q.options.forEach((opt, idx) => {
+        const item = document.createElement('div');
+        item.className = 'option-item';
+
+        if (hasAnswered) {
+          item.classList.add('disabled');
+          if (idx === userAnswers[currentQuestionIdx]) {
+            item.classList.add('selected');
+          }
+
+          if (selectedMode === 'practice') {
+            if (idx === q.correct) {
+              item.classList.add('correct');
+            } else if (idx === userAnswers[currentQuestionIdx] && idx !== q.correct) {
+              item.classList.add('wrong');
+            }
+          }
+        } else {
+          item.onclick = () => handleOptionSelect(idx);
+        }
+
+        item.innerHTML = `
+          <div class="option-badge">${letters[idx]}</div>
+          <div>${opt}</div>
+        `;
+
+        optionsContainer.appendChild(item);
+      });
+
+      // Hint handling (Εμφανίζεται κάτω από τις ερωτήσεις/επιλογές)
+      const hintBox = document.getElementById('hint-box');
+      document.getElementById('hint-text').innerHTML = q.hint;
+      if (hintsOpened[currentQuestionIdx]) {
+        hintBox.style.display = 'block';
+      } else {
+        hintBox.style.display = 'none';
+      }
+
+      // Feedback Box for Practice Mode
+      const feedbackBox = document.getElementById('feedback-box');
+      if (selectedMode === 'practice' && hasAnswered) {
+        const isCorrect = userAnswers[currentQuestionIdx] === q.correct;
+        feedbackBox.className = `feedback-box ${isCorrect ? 'correct' : 'wrong'}`;
+        document.getElementById('feedback-title').textContent = isCorrect ? '✓ Σωστή Απάντηση!' : '✗ Λανθασμένη Απάντηση';
+        document.getElementById('feedback-text').innerHTML = q.explanation;
+        feedbackBox.style.display = 'block';
+      } else {
+        feedbackBox.style.display = 'none';
+      }
+
+      // Control Buttons
+      const btnNext = document.getElementById('btn-next');
+      const btnPrev = document.getElementById('btn-prev');
+
+      btnPrev.classList.toggle('hidden', selectedMode === 'practice');
+      btnNext.disabled = userAnswers[currentQuestionIdx] === null;
+
+      if (currentQuestionIdx === questions.length - 1) {
+        btnNext.textContent = 'Ολοκλήρωση →';
+      } else {
+        btnNext.textContent = 'Επόμενη →';
+      }
+    }
+
+    // Toggle Hint Visibility
+    function toggleHint() {
+      hintsOpened[currentQuestionIdx] = !hintsOpened[currentQuestionIdx];
+      const hintBox = document.getElementById('hint-box');
+      hintBox.style.display = hintsOpened[currentQuestionIdx] ? 'block' : 'none';
+    }
+
+    // Handle Option Click
+    function handleOptionSelect(optionIdx) {
+      userAnswers[currentQuestionIdx] = optionIdx;
+      renderQuestion();
+    }
+
+    // Navigation
+    function nextQuestion() {
+      if (currentQuestionIdx < questions.length - 1) {
+        currentQuestionIdx++;
+        renderQuestion();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestionIdx > 0) {
+        currentQuestionIdx--;
+        renderQuestion();
+      }
+    }
+
+    // Finish Quiz and Show Report
+    function finishQuiz() {
+      document.getElementById('quiz-card').classList.add('hidden');
+      document.getElementById('report-card').classList.remove('hidden');
+
+      // Calculate score & stats
+      let correctCount = 0;
+      userAnswers.forEach((ans, idx) => {
+        if (ans === questions[idx].correct) {
+          correctCount++;
+        }
+      });
+
+      const totalHintsUsed = hintsOpened.filter(h => h === true).length;
+      const percentage = Math.round((correctCount / questions.length) * 100);
+
+      // Student name display
+      const nameDisplay = studentName ? `Μαθητής/τρια: ${studentName}` : 'Μαθητής/τρια: Ανώνυμος';
+      document.getElementById('report-student-name').textContent = nameDisplay;
+
+      document.getElementById('score-number').textContent = `${correctCount}/${questions.length}`;
+      document.getElementById('score-percent').textContent = `${percentage}%`;
+
+      document.getElementById('hints-used-count').textContent = `💡 Υποδείξεις που χρησιμοποιήθηκαν: ${totalHintsUsed}`;
+
+      // Score message
+      let msg = '';
+      if (percentage >= 90) msg = '🌟 Αριστευτική επίδοση! Έχετε κατανοήσει πλήρως τη δομή των τριγλυκεριδίων, τη διαφορά λιπών-ελαίων και την αντίδραση υδρογόνωσης.';
+      else if (percentage >= 70) msg = '👍 Πολύ καλή προσπάθεια! Μικρή εξάσκηση στις στοιχειομετρικές σχέσεις υδρογόνωσης ελαίων θα σας τελειοποιήσει.';
+      else if (percentage >= 50) msg = '📖 Καλή προσπάθεια. Συνιστάται μελέτη στη διάκριση κορεσμένων/ακόρεστων λιπαρών οξέων και τις δυνάμεις Van der Waals.';
+      else msg = '💡 Χρειάζεται επιπλέον μελέτη στην Ενότητα 5.2 (Λίπη και Έλαια) του σχολικού βιβλίου της Β΄ Λυκείου.';
+      document.getElementById('score-message').innerHTML = msg;
+
+      // Render Review List
+      const reviewContainer = document.getElementById('review-list');
+      reviewContainer.innerHTML = '';
+
+      questions.forEach((q, idx) => {
+        const userAns = userAnswers[idx];
+        const isCorrect = userAns === q.correct;
+        const usedHint = hintsOpened[idx];
+        const letters = ['A', 'B', 'Γ', 'Δ'];
+
+        const reviewItem = document.createElement('div');
+        reviewItem.className = 'review-item';
+        reviewItem.style.borderLeft = `5px solid ${isCorrect ? 'var(--correct-green)' : 'var(--wrong-red)'}`;
+
+        reviewItem.innerHTML = `
+          <div class="review-q-title">Ερώτηση ${idx + 1}: ${q.question}</div>
+          <div class="review-ans-info" style="color: ${isCorrect ? 'var(--correct-green)' : 'var(--wrong-red)'}; font-weight: 600;">
+            ${isCorrect ? '✓ Σωστή Απάντηση' : '✗ Λανθασμένη Απάντηση'} ${usedHint ? '<span style="color: var(--olive-green); font-weight: normal; margin-left: 8px;">(💡 Χρησιμοποιήθηκε υπόδειξη)</span>' : ''}
+          </div>
+          <div class="review-ans-info">
+            <strong>Η απάντησή σας:</strong> ${userAns !== null ? `${letters[userAns]}. ${q.options[userAns]}` : 'Δεν απαντήθηκε'}
+          </div>
+          ${!isCorrect ? `<div class="review-ans-info" style="color: var(--correct-green);"><strong>Ορθή απάντηση:</strong> ${letters[q.correct]}. ${q.options[q.correct]}</div>` : ''}
+          <div class="review-explanation"><strong>Επεξήγηση:</strong> ${q.explanation}</div>
+        `;
+
+        reviewContainer.appendChild(reviewItem);
+      });
+    }
+
+    // Restart Quiz
+    function restartQuiz() {
+      document.getElementById('report-card').classList.add('hidden');
+      document.getElementById('setup-card').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
